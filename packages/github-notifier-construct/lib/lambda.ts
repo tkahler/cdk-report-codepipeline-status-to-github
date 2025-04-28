@@ -1,6 +1,8 @@
 import {CodePipelineCloudWatchPipelineHandler} from "aws-lambda";
 import axios from 'axios';
-import {CodePipeline} from 'aws-sdk';
+
+import {CodePipeline} from "aws-cdk-lib/pipelines";
+import {CodePipelineClient, GetPipelineExecutionCommand} from "@aws-sdk/client-codepipeline";
 
 export const handler: CodePipelineCloudWatchPipelineHandler = async (event) => {
     const region = event.region;
@@ -70,8 +72,11 @@ const getPipelineExecution = async (pipelineName: string, executionId: string) =
         pipelineExecutionId: executionId
     };
 
-    const result = await new CodePipeline().getPipelineExecution(params).promise();
-    const artifactRevision = result?.pipelineExecution?.artifactRevisions?.find(() => true);
+    const client = new CodePipelineClient({});
+    const executionCommand = new GetPipelineExecutionCommand(params)
+    const response = await client.send(executionCommand)
+
+    const artifactRevision =response.pipelineExecution.artifactRevisions.find(() => true);
 
     const revisionURL = artifactRevision?.revisionUrl;
     const sha = artifactRevision?.revisionId;

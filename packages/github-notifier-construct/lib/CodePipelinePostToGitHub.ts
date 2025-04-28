@@ -26,7 +26,7 @@ export class CodePipelinePostToGitHub extends Construct {
       handler: "lambda.handler",
       timeout: Duration.seconds(30),
       logRetention: aws_logs.RetentionDays.ONE_MONTH,
-      runtime: aws_lambda.Runtime.NODEJS_14_X,
+      runtime: aws_lambda.Runtime.NODEJS_22_X,
     });
 
     // Allow the Lambda to query CodePipeline for more details on the build that triggered the event
